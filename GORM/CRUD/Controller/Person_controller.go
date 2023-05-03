@@ -1,8 +1,8 @@
 package Controller
 
 import (
-	"GORM/Connection"
-	"GORM/Models"
+	"GORM/CRUD/Connection"
+	Models2 "GORM/CRUD/Models"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
@@ -17,8 +17,8 @@ func errCheck(err error) {
 }
 
 func GetPeople(writer http.ResponseWriter, request *http.Request) {
-	var people []Models.Person
-	var books []Models.Book
+	var people []Models2.Person
+	var books []Models2.Book
 	fmt.Println("People")
 	db := Connection.GetConnection()
 	db.Find(&people)
@@ -36,8 +36,8 @@ func GetPeople(writer http.ResponseWriter, request *http.Request) {
 
 func GetPerson(writer http.ResponseWriter, request *http.Request) {
 	var (
-		people []Models.Person
-		books  []Models.Book
+		people []Models2.Person
+		books  []Models2.Book
 	)
 
 	params := mux.Vars(request)
@@ -58,7 +58,7 @@ func GetPerson(writer http.ResponseWriter, request *http.Request) {
 }
 
 func CreatePerson(writer http.ResponseWriter, request *http.Request) {
-	var person Models.Person
+	var person Models2.Person
 	db := Connection.GetConnection()
 	err := json.NewDecoder(request.Body).Decode(&person)
 	errCheck(err)
@@ -69,7 +69,7 @@ func CreatePerson(writer http.ResponseWriter, request *http.Request) {
 
 func UpdatePerson(writer http.ResponseWriter, request *http.Request) {
 	params := mux.Vars(request)
-	var person Models.Person
+	var person Models2.Person
 	db := Connection.GetConnection()
 	db.First(&person, params["ID"])
 	err := json.NewDecoder(request.Body).Decode(&person)
@@ -81,7 +81,7 @@ func UpdatePerson(writer http.ResponseWriter, request *http.Request) {
 
 func DeletePerson(writer http.ResponseWriter, request *http.Request) {
 	params := mux.Vars(request)
-	var person Models.Person
+	var person Models2.Person
 	db := Connection.GetConnection()
 	db.Delete(&person, params["ID"])
 	err := json.NewEncoder(writer).Encode(&person)

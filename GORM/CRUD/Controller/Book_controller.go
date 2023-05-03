@@ -1,8 +1,8 @@
 package Controller
 
 import (
-	"GORM/Connection"
-	"GORM/Models"
+	"GORM/CRUD/Connection"
+	"GORM/CRUD/Models"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
