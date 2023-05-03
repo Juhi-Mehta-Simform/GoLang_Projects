@@ -2,7 +2,7 @@ package main
 
 import (
 	"GORM/CRUD/Connection"
-	Models2 "GORM/CRUD/Models"
+	"GORM/CRUD/Models"
 	"GORM/CRUD/Router"
 	"fmt"
 	"gorm.io/gorm"
@@ -42,7 +42,7 @@ func main() {
 		fmt.Println("Closing database connection")
 	}()
 
-	err = db.AutoMigrate(&Models2.Person{}, &Models2.Book{})
+	err = db.AutoMigrate(&Models.Person{}, &Models.Book{})
 	errCheck(err)
 
 	log.Fatal(http.ListenAndServe(":8080", Router.Router))

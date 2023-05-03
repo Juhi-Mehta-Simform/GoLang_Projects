@@ -36,10 +36,9 @@ func GetBook(writer http.ResponseWriter, request *http.Request) {
 
 func CreateBook(writer http.ResponseWriter, request *http.Request) {
 	var book Models.Book
-	db := Connection.GetConnection()
+	Connection.GetConnection()
 	err := json.NewDecoder(request.Body).Decode(&book)
 	errCheck(err)
-	db.Create(&book)
 	err = json.NewEncoder(writer).Encode(&book)
 	errCheck(err)
 }
