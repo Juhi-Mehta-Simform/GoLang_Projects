@@ -157,7 +157,7 @@ func main() {
 	//data, _ := json.MarshalIndent(emp, "", "\t")
 	//fmt.Println(string(data))
 
-	//db.Joins("Employment").Where("country = ? and DATE_PART('Ye............................................................................................................ar', join_date) = ?", "Germany", 2021).Find(&emp)
+	//db.Joins("Employment").Where("country = ? and DATE_PART('Year', join_date) = ?", "Germany", 2021).Find(&emp)
 	//data, _ := json.MarshalIndent(emp, "", "\t")
 	//fmt.Println(string(data))
 
