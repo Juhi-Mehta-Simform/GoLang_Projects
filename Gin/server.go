@@ -6,12 +6,16 @@ import (
 	"go/Gin/middleware"
 	"go/Gin/service"
 	"io"
+	"net/http"
 	"os"
 )
 
 var (
 	videoService    service.VideoService       = service.New()
 	videoController controller.VideoController = controller.New(videoService)
+	loginService    service.LoginService       = service.NewLoginService()
+	jwtService      service.JWTservice         = service.NewJWTService()
+	loginController controller.LoginController = controller.NewLoginController(loginService, jwtService)
 )
 
 func setOutputLog() {
@@ -22,12 +26,33 @@ func setOutputLog() {
 func main() {
 	setOutputLog()
 	server := gin.New()
-	server.Use(gin.Recovery(), middleware.Logger(), middleware.BasicAuth())
-	server.GET("/videos", func(ctx *gin.Context) {
-		ctx.JSON(200, videoController.FindAll())
+	server.LoadHTMLGlob("templates/*.html")
+
+	server.Use(gin.Recovery(), middleware.Logger())
+
+	server.POST("/login", func(ctx *gin.Context) {
+		token := loginController.Login(ctx)
+		if token != "" {
+			ctx.JSON(http.StatusOK, gin.H{
+				"token": token,
+			})
+		} else {
+			ctx.JSON(http.StatusUnauthorized, nil)
+		}
 	})
-	server.POST("/videos", func(ctx *gin.Context) {
-		ctx.JSON(200, videoController.Save(ctx))
-	})
+	apiRoutes := server.Group("/api", middleware.AuthorizeJWT())
+	{
+		apiRoutes.GET("/videos", func(ctx *gin.Context) {
+			ctx.JSON(200, videoController.FindAll())
+		})
+		apiRoutes.POST("/videos", func(ctx *gin.Context) {
+			ctx.JSON(200, videoController.Save(ctx))
+		})
+	}
+
+	viewRoutes := server.Group("/views")
+	{
+		viewRoutes.GET("/videos", videoController.ShowAll)
+	}
 	server.Run(":8080")
 }
